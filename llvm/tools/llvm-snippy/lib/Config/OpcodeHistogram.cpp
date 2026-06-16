@@ -103,21 +103,20 @@ OpcodeHistogram OpcodeHistogramNormalization::denormalize(yaml::IO &IO) {
       break;
     }
 
-    auto Name = NameInfo.Val;
-    if (auto OpcOpt = OpCC.code(Name); OpcOpt) {
+    if (auto OpcOpt = OpCC.code(NameInfo.Val); OpcOpt) {
       auto Opc = Tgt.getInternalOpcode(*OpcOpt);
       bool OpcAlreadyDefined = Result.topOpcodes().count(Opc);
       if (OpcAlreadyDefined)
-        duplicateInstructionMsg(ConfigIOCtx->State.getCtx(), Name);
+        duplicateInstructionMsg(ConfigIOCtx->State.getCtx(), NameInfo.Val);
     }
     if (NameInfo.Kind == yaml::NodeKind::Map) {
-      if (auto ErrStr = insertHistogramNode(Result, Name, Weight.get());
+      if (auto ErrStr = insertHistogramNode(Result, NameInfo.Val, Weight.get());
           !ErrStr.empty()) {
         IO.setError(ErrStr);
         return {};
       }
     } else if (NameInfo.Kind == yaml::NodeKind::Scalar) {
-      auto DecodeEntry = decodeInstrRegex(IO, Name, Weight.get());
+      auto DecodeEntry = decodeInstrRegex(IO, NameInfo.Val, Weight.get());
       if (!DecodeEntry) {
         IO.setError(llvm::toString(DecodeEntry.takeError()));
         return {};

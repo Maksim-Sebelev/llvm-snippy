@@ -70,23 +70,28 @@ public:
   std::string ABIName;
   MCRegister StackPointer;
   MCRegister ReturnAddress;
-  bool FollowTargetABI;
   std::vector<std::string> PreserveCallerSavedGroups;
   SmallVector<MCRegister> SpilledToStack;
   SmallVector<MCRegister> SpilledToMem;
-  bool ExternalStack;
-  bool StaticStack;
 
   // linker options.
-  bool MangleExportedNames;
   std::string EntryPointName;
-
   std::string PluginInfoFilename;
+
   // MemoryManager config.
   MemoryInitConfig MemoryCfg;
 
   // TODO: rethink if it is needed here.
   std::string InitialRegYamlFile;
+
+  // stack frame specific.
+  bool FollowTargetABI;
+  bool ExternalStack;
+  bool StaticStack;
+
+  // linker options.
+  bool MangleExportedNames;
+
 
   ArrayRef<MCRegister> getRegsSpilledToStack() const { return SpilledToStack; }
 
@@ -116,8 +121,8 @@ public:
 };
 
 struct TrackingOptions {
-  bool BTMode;
   std::optional<SelfcheckConfig> Selfcheck;
+  bool BTMode;
   bool AddressVH;
 };
 
@@ -215,13 +220,14 @@ struct ModelPluginOptions {
 };
 
 struct InstrsGenerationOptions {
+  std::string LastInstr;
+  std::optional<unsigned> ChainedRXChunkSize;
+  std::optional<unsigned> NumInstrs;
   bool RunMachineInstrVerifier;
   bool ChainedRXSectionsFill;
   bool ChainedRXSorted;
   bool NeedsRelocations;
-  std::optional<unsigned> ChainedRXChunkSize;
-  std::optional<unsigned> NumInstrs;
-  std::string LastInstr;
+
   bool useRetAsLastInstr() const {
     return StringRef{"RET"}.equals_insensitive(LastInstr);
   }
@@ -232,10 +238,10 @@ struct InstrsGenerationOptions {
 };
 
 struct RegistersOptions {
-  bool InitializeRegs;
   // TODO: discuss these to be Interpreter-only options
   std::string InitialStateOutputYaml;
   std::string FinalStateOutputYaml;
+  bool InitializeRegs;
 };
 
 struct TraceConvertOptions {

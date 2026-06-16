@@ -71,14 +71,15 @@ struct Branchegram final {
     std::optional<bool> UseStack;
   };
 
-  bool PermuteCF = true;
-  unsigned Alignment = DefaultAlignment;
-  double LoopRatio = DefaultLoopRatio;
+
   ConsecutiveLoops ConsLoops;
   NumericRange<unsigned> NLoopIter = {MinNLoopIterDefault, MaxNLoopIterDefault};
   LoopCountersInfo LoopCounters;
   Depth MaxDepth;
   Distance Dist;
+  double LoopRatio = DefaultLoopRatio;
+  unsigned Alignment = DefaultAlignment;
+  bool PermuteCF = true;
 
   void print(raw_ostream &OS) const;
 
